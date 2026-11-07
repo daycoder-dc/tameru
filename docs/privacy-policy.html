@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kashu - Politica de Privacidad</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      color: #1a1a2e;
+      background: #f8f9fa;
+      padding: 24px;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px 32px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 8px;
+      color: #4F46E5;
+    }
+    .subtitle {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin-top: 28px;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    p, li {
+      color: #475569;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+    .highlight {
+      background: #eef2ff;
+      border-left: 3px solid #4F46E5;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+    }
+    .highlight p { margin-bottom: 0; color: #3730a3; }
+    footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Politica de Privacidad</h1>
+    <p class="subtitle">Kashu &mdash; Administrador de finanzas personales &middot; Ultima actualizacion: 7 de noviembre de 2026</p>
+
+    <div class="highlight">
+      <p><strong>Kashu funciona 100% sin conexion a internet.</strong> No recopilamos, transmitimos ni almacenamos ninguno de tus datos en servidores externos.</p>
+    </div>
+
+    <h2>1. Datos que almacena la aplicacion</h2>
+    <p>Kashu guarda la siguiente informacion exclusivamente en tu dispositivo:</p>
+    <ul>
+      <li>Transacciones de ingresos y gastos que registres</li>
+      <li>Categorias personalizadas</li>
+      <li>Gastos fijos mensuales</li>
+      <li>Creditos y pagos de cuotas</li>
+      <li>Presupuesto mensual</li>
+      <li>Preferencias de configuracion (moneda, PIN de acceso)</li>
+    </ul>
+
+    <h2>2. Almacenamiento local</h2>
+    <p>Todos los datos se almacenan en una base de datos SQLite dentro del almacenamiento privado de la aplicacion en tu dispositivo. El PIN de acceso se guarda de forma cifrada usando el almacenamiento seguro del sistema operativo (Android Keystore).</p>
+
+    <h2>3. Datos que NO recopilamos</h2>
+    <p>Kashu <strong>no recopila ni transmite</strong>:</p>
+    <ul>
+      <li>Informacion personal identificable</li>
+      <li>Datos de ubicacion</li>
+      <li>Datos de uso o analiticas</li>
+      <li>Informacion financiera a servidores externos</li>
+      <li>Identificadores de publicidad</li>
+      <li>Cookies ni rastreadores</li>
+    </ul>
+
+    <h2>4. Permisos de la aplicacion</h2>
+    <p>Kashu solicita unicamente los siguientes permisos:</p>
+    <ul>
+      <li><strong>Biometrico:</strong> Para autenticacion mediante huella dactilar o reconocimiento facial como alternativa al PIN.</li>
+      <li><strong>Almacenamiento:</strong> Para exportar e importar copias de seguridad de la base de datos, unicamente cuando el usuario lo solicita.</li>
+    </ul>
+
+    <h2>5. Copias de seguridad</h2>
+    <p>La funcion de exportar/importar base de datos crea una copia del archivo de datos en la ubicacion que el usuario elija dentro de su dispositivo. Kashu no sube copias de seguridad a la nube ni a ningun servicio externo.</p>
+
+    <h2>6. Seguridad</h2>
+    <p>La aplicacion protege el acceso mediante un PIN de 4 digitos almacenado con cifrado AES a traves de Android Keystore. Opcionalmente, el usuario puede habilitar la autenticacion biometrica.</p>
+
+    <h2>7. Datos de menores</h2>
+    <p>Kashu no esta dirigida a menores de 13 anos y no recopila intencionalmente datos de menores.</p>
+
+    <h2>8. Cambios en esta politica</h2>
+    <p>Cualquier modificacion a esta politica de privacidad sera publicada en esta misma pagina con la fecha de actualizacion correspondiente.</p>
+
+    <h2>9. Contacto</h2>
+    <p>Si tienes preguntas sobre esta politica de privacidad, puedes contactar al desarrollador en:</p>
+    <p><strong>Dairo Carrasquilla</strong><br>
+    Email: cdairo2204@gmail.com</p>
+
+    <footer>
+      &copy; 2026 Dairo Carrasquilla &middot; Kashu v1.0.0
+    </footer>
+  </div>
+</body>
+</html>

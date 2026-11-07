@@ -1,0 +1,108 @@
+============================================================
+FICHA DE PLAY STORE - KASHU
+============================================================
+
+NOMBRE DE LA APP: Kashu
+NOMBRE DEL PAQUETE: com.daycoder.kashu
+CATEGORIA: Finanzas
+CLASIFICACION: Todos (E)
+
+------------------------------------------------------------
+DESCRIPCION CORTA (max 80 caracteres):
+------------------------------------------------------------
+Controla tus finanzas, gastos fijos y creditos. 100% offline y privado.
+
+------------------------------------------------------------
+DESCRIPCION LARGA (max 4000 caracteres):
+------------------------------------------------------------
+Kashu es tu asistente de finanzas personales que funciona completamente sin internet. Toda tu informacion se guarda en tu dispositivo, nunca en la nube.
+
+Lleva el control de tus ingresos, gastos, gastos fijos mensuales y creditos de forma simple y organizada.
+
+FUNCIONES PRINCIPALES:
+
+Dashboard inteligente
+- Resumen mensual de ingresos, gastos, pagado y disponible
+- Actividad reciente con tus ultimas transacciones
+- Navegacion por mes para ver el historial
+
+Registro de transacciones
+- Registra ingresos y gastos con categoria, monto y fecha
+- Categorias personalizables con iconos y colores
+- Filtros por mes para revisar tu historial
+
+Gastos fijos mensuales
+- Agrega tus gastos recurrentes (arriendo, servicios, seguros)
+- Marca los pagados cada mes con un checkbox
+- Ve cuanto has pagado vs cuanto te falta
+- Barra de progreso mensual
+
+Control de creditos
+- Registra tus creditos con monto, tasa de interes y numero de cuotas
+- Calculo automatico de la cuota mensual
+- Tabla de amortizacion con cada cuota y su estado
+- Las cuotas de creditos aparecen automaticamente en Gastos Fijos
+- Progreso visual de cuotas pagadas vs totales
+
+Seguridad
+- Protege tu informacion con PIN de 4 digitos
+- Autenticacion biometrica opcional (huella dactilar)
+- Bloqueo automatico al salir de la app
+
+Respaldo de datos
+- Exporta tu base de datos como copia de seguridad
+- Importa una copia de seguridad para restaurar tus datos
+- Todo local, sin necesidad de cuenta ni internet
+
+PRIVACIDAD TOTAL:
+Kashu no recopila datos, no tiene publicidad, no requiere registro ni conexion a internet. Tus finanzas son tuyas y se quedan en tu dispositivo.
+
+Ideal para:
+- Personas que quieren llevar un control simple de sus finanzas
+- Quienes prefieren privacidad total sin cuentas en la nube
+- Control de gastos fijos y creditos bancarios
+- Presupuesto mensual personal
+
+------------------------------------------------------------
+POLITICA DE PRIVACIDAD URL:
+------------------------------------------------------------
+https://daycoder-dc.github.io/kashu/privacy-policy.html
+
+------------------------------------------------------------
+EMAIL DE CONTACTO:
+------------------------------------------------------------
+cdairo2204@gmail.com
+
+------------------------------------------------------------
+ARCHIVOS PARA SUBIR:
+------------------------------------------------------------
+Icono (512x512):        assets/store/icon_512.png
+Grafico de funcion:     assets/store/feature_graphic.png
+Capturas de pantalla:   assets/store/screenshots/04_dashboard.png
+                        assets/store/screenshots/05_gastos.png
+                        assets/store/screenshots/06_fijos.png
+                        assets/store/screenshots/07_creditos.png
+AAB firmado:            build/app/outputs/bundle/release/app-release.aab
+
+------------------------------------------------------------
+CUESTIONARIOS PLAY CONSOLE (respuestas):
+------------------------------------------------------------
+
+CLASIFICACION DE CONTENIDO (IARC):
+- Violencia: No
+- Sexualidad: No
+- Lenguaje: No
+- Sustancias: No
+- Publicidad: No
+- Compras in-app: No
+-> Resultado esperado: Todos (E) / PEGI 3
+
+DATA SAFETY:
+- Recopila datos de usuario: No
+- Comparte datos con terceros: No
+- Usa encriptacion: Si (almacenamiento seguro del PIN)
+- Permite eliminar datos: Si (desinstalando la app o desde ajustes)
+
+PUBLICO OBJETIVO:
+- Dirigida a menores de 13: No
+- Grupo de edad: 13+ / Todas las edades
