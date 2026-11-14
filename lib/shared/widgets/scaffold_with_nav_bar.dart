@@ -9,6 +9,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
@@ -22,22 +25,26 @@ class ScaffoldWithNavBar extends StatelessWidget {
         destinations: [
           NavigationDestination(
             icon: Icon(PhosphorIconsLight.house),
-            selectedIcon: Icon(PhosphorIconsFill.house),
+            selectedIcon: Icon(PhosphorIconsFill.house,
+                color: isDark ? Colors.white : Colors.white),
             label: 'Inicio',
           ),
           NavigationDestination(
             icon: Icon(PhosphorIconsLight.receipt),
-            selectedIcon: Icon(PhosphorIconsFill.receipt),
+            selectedIcon: Icon(PhosphorIconsFill.receipt,
+                color: isDark ? Colors.white : Colors.white),
             label: 'Gastos',
           ),
           NavigationDestination(
             icon: Icon(PhosphorIconsLight.clipboardText),
-            selectedIcon: Icon(PhosphorIconsFill.clipboardText),
+            selectedIcon: Icon(PhosphorIconsFill.clipboardText,
+                color: isDark ? Colors.white : Colors.white),
             label: 'Fijos',
           ),
           NavigationDestination(
             icon: Icon(PhosphorIconsLight.creditCard),
-            selectedIcon: Icon(PhosphorIconsFill.creditCard),
+            selectedIcon: Icon(PhosphorIconsFill.creditCard,
+                color: isDark ? Colors.white : Colors.white),
             label: 'Creditos',
           ),
         ],

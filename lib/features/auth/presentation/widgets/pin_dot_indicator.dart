@@ -4,20 +4,25 @@ class PinDotIndicator extends StatelessWidget {
   final int pinLength;
   final int filledCount;
   final bool hasError;
+  final Color? filledColor;
+  final Color? emptyColor;
 
   const PinDotIndicator({
     super.key,
     required this.pinLength,
     required this.filledCount,
     this.hasError = false,
+    this.filledColor,
+    this.emptyColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final filledColor =
-        hasError ? colorScheme.error : colorScheme.primary;
-    final emptyColor = colorScheme.outlineVariant;
+    final filled = hasError
+        ? colorScheme.error
+        : filledColor ?? colorScheme.primary;
+    final empty = emptyColor ?? colorScheme.outlineVariant;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -30,9 +35,9 @@ class PinDotIndicator extends StatelessWidget {
           height: isFilled ? 16 : 14,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: isFilled ? filledColor : Colors.transparent,
+            color: isFilled ? filled : Colors.transparent,
             border: Border.all(
-              color: isFilled ? filledColor : emptyColor,
+              color: isFilled ? filled : empty,
               width: 2,
             ),
           ),

@@ -3,20 +3,24 @@ import 'package:drift/drift.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/database/daos/debt_dao.dart';
 import '../../../../core/database/daos/fixed_expense_dao.dart';
+import '../../../../core/database/daos/monthly_budget_dao.dart';
 import '../../../../core/database/daos/transaction_dao.dart';
 
 class FixedExpenseLocalDatasource {
   final FixedExpenseDao _fixedExpenseDao;
   final TransactionDao _transactionDao;
   final DebtDao _debtDao;
+  final MonthlyBudgetDao _budgetDao;
 
   FixedExpenseLocalDatasource({
     required FixedExpenseDao fixedExpenseDao,
     required TransactionDao transactionDao,
     required DebtDao debtDao,
+    required MonthlyBudgetDao budgetDao,
   })  : _fixedExpenseDao = fixedExpenseDao,
         _transactionDao = transactionDao,
-        _debtDao = debtDao;
+        _debtDao = debtDao,
+        _budgetDao = budgetDao;
 
   Stream<List<FixedExpenseWithCategory>> watchActiveWithPayments(
       int month, int year) {
@@ -71,6 +75,11 @@ class FixedExpenseLocalDatasource {
 
   Future<double> getTotalIncome(int month, int year) =>
       _transactionDao.sumByTypeAndMonth(1, month, year);
+
+  Future<double?> getBudgetAmount(int month, int year) async {
+    final budget = await _budgetDao.getByMonthYear(month, year);
+    return budget?.budgetAmount;
+  }
 
   Future<List<DebtPaymentWithInfo>> getDebtPaymentsForMonth(
       int month, int year) {

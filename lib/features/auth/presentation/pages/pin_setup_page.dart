@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../shared/painters/wave_painter.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/pin_dot_indicator.dart';
@@ -18,7 +19,7 @@ class PinSetupPage extends StatefulWidget {
 }
 
 class _PinSetupPageState extends State<PinSetupPage> {
-  static const _pinLength = 4;
+  static const _pinLength = 6;
   _SetupStep _step = _SetupStep.create;
   String _enteredPin = '';
   String _firstPin = '';
@@ -150,8 +151,16 @@ class _PinSetupPageState extends State<PinSetupPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final hasError = _errorMessage != null;
+    final headerPrimary = isDark
+        ? colorScheme.primary.withAlpha(60)
+        : colorScheme.primary;
+    final headerSecondary = isDark
+        ? colorScheme.primary.withAlpha(35)
+        : colorScheme.primary.withAlpha(180);
 
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
@@ -179,50 +188,88 @@ class _PinSetupPageState extends State<PinSetupPage> {
                 ),
               )
             : null,
-        body: SafeArea(
-          child: _step == _SetupStep.biometric
-              ? _buildBiometricStep(colorScheme)
-              : Column(
-                  children: [
-                    const Spacer(flex: 1),
-                    Icon(
-                      _step == _SetupStep.create
-                          ? Icons.pin_rounded
-                          : Icons.verified_rounded,
-                      size: 48,
-                      color: colorScheme.primary,
+        body: _step == _SetupStep.biometric
+            ? _buildBiometricStep(colorScheme)
+            : Stack(
+                children: [
+                  if (!widget.isChange) ...[
+                    CustomPaint(
+                      size: Size(
+                        MediaQuery.of(context).size.width,
+                        MediaQuery.of(context).size.height * 0.38,
+                      ),
+                      painter: WaveHeaderPainter(
+                        color: headerPrimary,
+                        secondaryColor: headerSecondary,
+                      ),
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      _title,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
+                    CustomPaint(
+                      size: Size(
+                        MediaQuery.of(context).size.width,
+                        MediaQuery.of(context).size.height * 0.38,
+                      ),
+                      painter: TopographyPainter(
+                        lineColor: Colors.white.withAlpha(isDark ? 12 : 25),
+                      ),
+                    ),
+                  ],
+                  SafeArea(
+                    child: Column(
+                      children: [
+                        const Spacer(flex: 1),
+                        Icon(
+                          _step == _SetupStep.create
+                              ? Icons.pin_rounded
+                              : Icons.verified_rounded,
+                          size: 52,
+                          color: (!widget.isChange && !isDark)
+                              ? Colors.white
+                              : colorScheme.primary,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          _title,
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: (!widget.isChange && !isDark)
+                                ? Colors.white
+                                : null,
                           ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _subtitle,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _subtitle,
+                          style: theme.textTheme.bodyLarge?.copyWith(
                             color: hasError
                                 ? colorScheme.error
-                                : colorScheme.onSurfaceVariant,
+                                : (!widget.isChange && !isDark)
+                                    ? Colors.white70
+                                    : colorScheme.onSurfaceVariant,
                           ),
+                        ),
+                        const SizedBox(height: 24),
+                        PinDotIndicator(
+                          pinLength: _pinLength,
+                          filledCount: _enteredPin.length,
+                          hasError: hasError,
+                          filledColor: (!widget.isChange && !isDark)
+                              ? Colors.white
+                              : null,
+                          emptyColor: (!widget.isChange && !isDark)
+                              ? Colors.white54
+                              : null,
+                        ),
+                        const Spacer(flex: 1),
+                        PinKeyboard(
+                          onDigitPressed: _onDigit,
+                          onDeletePressed: _onDelete,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    PinDotIndicator(
-                      pinLength: _pinLength,
-                      filledCount: _enteredPin.length,
-                      hasError: hasError,
-                    ),
-                    const Spacer(flex: 1),
-                    PinKeyboard(
-                      onDigitPressed: _onDigit,
-                      onDeletePressed: _onDelete,
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
-        ),
+                  ),
+                ],
+              ),
       ),
     );
   }

@@ -18,6 +18,7 @@ class FixedExpenseRepositoryImpl implements FixedExpenseRepository {
     try {
       final items = await _datasource.getActiveWithPayments(month, year);
       final income = await _datasource.getTotalIncome(month, year);
+      final budget = await _datasource.getBudgetAmount(month, year);
       final debtPayments =
           await _datasource.getDebtPaymentsForMonth(month, year);
 
@@ -66,7 +67,7 @@ class FixedExpenseRepositoryImpl implements FixedExpenseRepository {
         totalExpenses: totalExpenses,
         totalPaid: totalPaid,
         totalRemaining: totalExpenses - totalPaid,
-        salary: income,
+        salary: budget ?? income,
       ));
     } catch (e) {
       return Left(DatabaseFailure(message: e.toString()));

@@ -8,6 +8,8 @@ import '../../../../core/enums/transaction_type.dart';
 import '../../../../core/utils/icon_registry.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/thousand_separator_formatter.dart';
+import '../../../../shared/painters/wave_painter.dart';
+import '../../../../shared/widgets/animated_check_button.dart';
 import '../../../../shared/widgets/breathing_icon.dart';
 import '../../../../shared/widgets/kpi_card.dart';
 import '../../../../shared/widgets/month_selector.dart';
@@ -50,102 +52,149 @@ class _FixedExpensesPageState extends State<FixedExpensesPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final scheme = theme.colorScheme;
+    final headerPrimary = isDark
+        ? scheme.primary.withAlpha(60)
+        : scheme.primary;
+    final headerSecondary = isDark
+        ? scheme.primary.withAlpha(35)
+        : scheme.primary.withAlpha(180);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gastos Fijos'),
-        centerTitle: true,
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddEditDialog(context),
         child: Icon(PhosphorIconsBold.plus),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            MonthSelector(
-              currentMonth: _currentMonth,
-              onMonthChanged: _onMonthChanged,
+      body: BlocBuilder<FixedExpensesCubit, FixedExpensesState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return RefreshIndicator(
+            onRefresh: () async => _loadMonth(),
+            edgeOffset: 200,
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Stack(
+                    children: [
+                      CustomPaint(
+                        size: const Size(double.infinity, 220),
+                        painter: WaveHeaderPainter(
+                          color: headerPrimary,
+                          secondaryColor: headerSecondary,
+                        ),
+                      ),
+                      CustomPaint(
+                        size: const Size(double.infinity, 220),
+                        painter: TopographyPainter(
+                          lineColor: Colors.white.withAlpha(isDark ? 12 : 25),
+                        ),
+                      ),
+                      SafeArea(
+                        bottom: false,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 12),
+                              Text(
+                                'Gastos Fijos',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: isDark ? scheme.onSurface : Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              MonthSelector(
+                                currentMonth: _currentMonth,
+                                onMonthChanged: _onMonthChanged,
+                                foregroundColor: isDark ? null : Colors.white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (state is FixedExpensesLoading)
+                  const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (state is FixedExpensesError)
+                  SliverFillRemaining(
+                    child: Center(child: Text('Error: ${state.message}')),
+                  )
+                else if (state is FixedExpensesLoaded)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+                    sliver: SliverToBoxAdapter(
+                      child: Transform.translate(
+                        offset: const Offset(0, -30),
+                        child: _buildLoadedContent(context, state.summary),
+                      ),
+                    ),
+                  )
+                else
+                  const SliverToBoxAdapter(child: SizedBox.shrink()),
+              ],
             ),
-            Expanded(
-              child: BlocBuilder<FixedExpensesCubit, FixedExpensesState>(
-                bloc: _cubit,
-                builder: (context, state) {
-                  if (state is FixedExpensesLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is FixedExpensesError) {
-                    return Center(child: Text('Error: ${state.message}'));
-                  }
-                  if (state is FixedExpensesLoaded) {
-                    return RefreshIndicator(
-                      onRefresh: () async => _loadMonth(),
-                      child: _buildContent(context, state.summary),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context, FixedExpensesSummary summary) {
+  Widget _buildLoadedContent(BuildContext context, FixedExpensesSummary summary) {
     final theme = Theme.of(context);
 
     if (summary.expenses.isEmpty) {
-      return ListView(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  BreathingIcon(
-                    child: Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer.withAlpha(80),
-                        shape: BoxShape.circle,
-                      ),
-                      child: PhosphorIcon(
-                        PhosphorIconsDuotone.clipboardText,
-                        size: 36,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
+      return Padding(
+        padding: const EdgeInsets.only(top: 60),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              BreathingIcon(
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer.withAlpha(80),
+                    shape: BoxShape.circle,
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Sin gastos fijos',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                  child: PhosphorIcon(
+                    PhosphorIconsDuotone.clipboardText,
+                    size: 36,
+                    color: theme.colorScheme.primary,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Agrega tus gastos mensuales recurrentes\npara llevar control de lo que pagas',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              const SizedBox(height: 16),
+              Text(
+                'Sin gastos fijos',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Agrega tus gastos mensuales recurrentes\npara llevar control de lo que pagas',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       );
     }
 
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+    return Column(
       children: [
-        const SizedBox(height: 8),
         _buildKpiGrid(summary),
         const SizedBox(height: 16),
         _buildProgressBar(summary, theme),
@@ -170,7 +219,6 @@ class _FixedExpensesPageState extends State<FixedExpensesPage> {
         const SizedBox(height: 8),
         ...summary.expenses.map(
             (expense) => _buildExpenseTile(context, expense, theme)),
-        const SizedBox(height: 80),
       ],
     );
   }
@@ -238,10 +286,10 @@ class _FixedExpensesPageState extends State<FixedExpensesPage> {
     return Column(
       children: [
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           child: LinearProgressIndicator(
             value: progress,
-            minHeight: 8,
+            minHeight: 10,
             backgroundColor:
                 theme.colorScheme.surfaceContainerHighest,
             color: theme.appColors.success,
@@ -272,17 +320,35 @@ class _FixedExpensesPageState extends State<FixedExpensesPage> {
   Widget _buildExpenseTile(
       BuildContext context, FixedExpenseEntity expense, ThemeData theme) {
     final color = Color(expense.categoryColor);
-    return Card(
-      margin: const EdgeInsets.only(bottom: 6),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: expense.isDebtPayment
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHigh
+            : theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: isDark
             ? null
-            : () => _showAddEditDialog(context, expense: expense),
-        onLongPress: expense.isDebtPayment
-            ? null
-            : () => _showDeleteDialog(context, expense),
-        child: Padding(
+            : [
+                BoxShadow(
+                  color: Colors.black.withAlpha(8),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: expense.isDebtPayment
+              ? null
+              : () => _showAddEditDialog(context, expense: expense),
+          onLongPress: expense.isDebtPayment
+              ? null
+              : () => _showDeleteDialog(context, expense),
+          child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
@@ -335,34 +401,31 @@ class _FixedExpensesPageState extends State<FixedExpensesPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              SizedBox(
-                width: 32,
-                height: 32,
-                child: Checkbox(
-                  value: expense.isPaidThisMonth,
-                  onChanged: (value) {
-                    if (expense.isDebtPayment) {
-                      _cubit.toggleDebtPayment(
-                        expense.debtPaymentId!,
-                        _currentMonth.month,
-                        _currentMonth.year,
-                        value ?? false,
-                      );
-                    } else {
-                      _cubit.togglePayment(
-                        expense.id,
-                        _currentMonth.month,
-                        _currentMonth.year,
-                        value ?? false,
-                      );
-                    }
-                  },
-                  activeColor: theme.appColors.success,
-                ),
+              AnimatedCheckButton(
+                isChecked: expense.isPaidThisMonth,
+                activeColor: theme.appColors.success,
+                onChanged: (value) {
+                  if (expense.isDebtPayment) {
+                    _cubit.toggleDebtPayment(
+                      expense.debtPaymentId!,
+                      _currentMonth.month,
+                      _currentMonth.year,
+                      value,
+                    );
+                  } else {
+                    _cubit.togglePayment(
+                      expense.id,
+                      _currentMonth.month,
+                      _currentMonth.year,
+                      value,
+                    );
+                  }
+                },
               ),
             ],
           ),
         ),
+      ),
       ),
     );
   }

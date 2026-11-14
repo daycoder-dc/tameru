@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../shared/painters/wave_painter.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 
@@ -51,57 +52,75 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 650),
-              curve: Curves.easeOutBack,
-              builder: (context, value, child) {
-                return Opacity(
-                  opacity: value.clamp(0.0, 1.0),
-                  child: Transform.scale(
-                    scale: 0.8 + 0.2 * value,
-                    child: child,
-                  ),
-                );
-              },
-              child: AnimatedBuilder(
-                animation: _pulseController,
-                builder: (context, child) {
-                  final scale =
-                      1.0 + 0.05 * _pulseController.value;
-                  return Transform.scale(
-                    scale: scale,
-                    child: child,
-                  );
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(28),
-                  child: Image.asset(
-                    'assets/icon/app_icon.png',
-                    width: 120,
-                    height: 120,
+      body: Stack(
+        children: [
+          CustomPaint(
+            size: Size(size.width, size.height * 0.55),
+            painter: WaveHeaderPainter(
+              color: isDark ? scheme.primary.withAlpha(60) : scheme.primary,
+              secondaryColor: isDark
+                  ? scheme.primary.withAlpha(35)
+                  : scheme.primary.withAlpha(180),
+            ),
+          ),
+          CustomPaint(
+            size: Size(size.width, size.height * 0.55),
+            painter: TopographyPainter(
+              lineColor: Colors.white.withAlpha(isDark ? 12 : 25),
+            ),
+          ),
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.0, end: 1.0),
+                  duration: const Duration(milliseconds: 650),
+                  curve: Curves.easeOutBack,
+                  builder: (context, value, child) {
+                    return Opacity(
+                      opacity: value.clamp(0.0, 1.0),
+                      child: Transform.scale(
+                        scale: 0.8 + 0.2 * value,
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: AnimatedBuilder(
+                    animation: _pulseController,
+                    builder: (context, child) {
+                      final scale = 1.0 + 0.05 * _pulseController.value;
+                      return Transform.scale(scale: scale, child: child);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: Image.asset(
+                        'assets/icon/app_icon.png',
+                        width: 120,
+                        height: 120,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.4,
+                    color: isDark ? scheme.primary : Colors.white,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.4,
-                color: scheme.primary,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

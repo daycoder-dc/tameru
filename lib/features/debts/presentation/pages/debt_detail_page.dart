@@ -6,6 +6,8 @@ import '../../../../core/enums/transaction_type.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/icon_registry.dart';
+import '../../../../shared/painters/wave_painter.dart';
+import '../../../../shared/widgets/animated_check_button.dart';
 import '../../../transactions/presentation/cubit/transaction_form_cubit.dart';
 import '../../../transactions/presentation/cubit/transaction_form_state.dart';
 import '../../domain/entities/debt_entity.dart';
@@ -44,108 +46,185 @@ class _DebtDetailPageState extends State<DebtDetailPage> {
     );
     final monthFormat = DateFormat('MMM yyyy', 'es');
 
+    final isDark = theme.brightness == Brightness.dark;
+    final headerPrimary = isDark
+        ? scheme.primary.withAlpha(60)
+        : scheme.primary;
+    final headerSecondary = isDark
+        ? scheme.primary.withAlpha(35)
+        : scheme.primary.withAlpha(180);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detalle del credito'),
-        actions: [
-          BlocBuilder<DebtsCubit, DebtsState>(
-            bloc: _cubit,
-            builder: (context, state) {
-              if (state is! DebtDetailLoaded) return const SizedBox.shrink();
-              return IconButton(
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: () => _showEditSheet(context, state.debt),
-              );
-            },
-          ),
-        ],
-      ),
       body: BlocBuilder<DebtsCubit, DebtsState>(
         bloc: _cubit,
         builder: (context, state) {
-          if (state is DebtsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is DebtsError) {
-            return Center(child: Text(state.message));
-          }
-          if (state is! DebtDetailLoaded) {
-            return const SizedBox.shrink();
-          }
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Stack(
+                  children: [
+                    CustomPaint(
+                      size: const Size(double.infinity, 180),
+                      painter: WaveHeaderPainter(
+                        color: headerPrimary,
+                        secondaryColor: headerSecondary,
+                      ),
+                    ),
+                    CustomPaint(
+                      size: const Size(double.infinity, 180),
+                      painter: TopographyPainter(
+                        lineColor: Colors.white.withAlpha(isDark ? 12 : 25),
+                      ),
+                    ),
+                    SafeArea(
+                      bottom: false,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.arrow_back_rounded,
+                                  color: isDark ? scheme.onSurface : Colors.white),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Detalle del credito',
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: isDark ? scheme.onSurface : Colors.white,
+                                ),
+                              ),
+                            ),
+                            if (state is DebtDetailLoaded)
+                              IconButton(
+                                icon: Icon(Icons.edit_outlined,
+                                    color: isDark ? scheme.onSurface : Colors.white),
+                                onPressed: () => _showEditSheet(context, state.debt),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (state is DebtsLoading)
+                const SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (state is DebtsError)
+                SliverFillRemaining(
+                  child: Center(child: Text(state.message)),
+                )
+              else if (state is DebtDetailLoaded)
+                _buildDebtContent(state, theme, colors, scheme, currencyFormat, monthFormat, isDark)
+              else
+                const SliverToBoxAdapter(child: SizedBox.shrink()),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
-          final debt = state.debt;
-          final payments = state.payments;
+  Widget _buildDebtContent(
+    DebtDetailLoaded state,
+    ThemeData theme,
+    AppColors colors,
+    ColorScheme scheme,
+    NumberFormat currencyFormat,
+    DateFormat monthFormat,
+    bool isDark,
+  ) {
+    final debt = state.debt;
+    final payments = state.payments;
 
-          return RefreshIndicator(
-            onRefresh: () async => _cubit.loadDebtDetail(widget.debtId),
-            child: ListView(
-              padding: const EdgeInsets.all(Spacing.lg),
-              children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(Spacing.lg),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            resolveIcon(debt.categoryIconCodePoint),
-                            color: Color(debt.categoryColor),
-                          ),
-                          const SizedBox(width: Spacing.sm),
-                          Expanded(
-                            child: Text(debt.name,
-                                style: theme.textTheme.titleMedium),
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+      sliver: SliverToBoxAdapter(
+        child: Transform.translate(
+          offset: const Offset(0, -20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? scheme.surfaceContainerHigh
+                      : scheme.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: isDark
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(10),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: Spacing.lg),
-                      _InfoRow(
-                        label: 'Monto total',
-                        value: currencyFormat.format(debt.totalAmount),
-                      ),
-                      _InfoRow(
-                        label: 'Tasa de interes',
-                        value: '${debt.interestRate.toStringAsFixed(1)}% anual',
-                      ),
-                      _InfoRow(
-                        label: 'Cuota mensual',
-                        value: currencyFormat.format(debt.monthlyPayment),
-                      ),
-                      _InfoRow(
-                        label: 'Total a pagar',
-                        value: currencyFormat.format(debt.totalCost),
-                      ),
-                      _InfoRow(
-                        label: 'Intereses totales',
-                        value: currencyFormat.format(debt.totalInterest),
-                        valueColor: scheme.error,
-                      ),
-                      const SizedBox(height: Spacing.md),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: debt.progress,
-                          minHeight: 8,
-                          backgroundColor:
-                              scheme.surfaceContainerHighest,
-                          valueColor: AlwaysStoppedAnimation(
-                            debt.progress >= 1.0
-                                ? colors.success
-                                : colors.income,
-                          ),
+                ),
+                padding: const EdgeInsets.all(Spacing.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          resolveIcon(debt.categoryIconCodePoint),
+                          color: Color(debt.categoryColor),
+                        ),
+                        const SizedBox(width: Spacing.sm),
+                        Expanded(
+                          child: Text(debt.name,
+                              style: theme.textTheme.titleMedium),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: Spacing.lg),
+                    _InfoRow(
+                      label: 'Monto total',
+                      value: currencyFormat.format(debt.totalAmount),
+                    ),
+                    _InfoRow(
+                      label: 'Tasa de interes',
+                      value: '${debt.interestRate.toStringAsFixed(1)}% anual',
+                    ),
+                    _InfoRow(
+                      label: 'Cuota mensual',
+                      value: currencyFormat.format(debt.monthlyPayment),
+                    ),
+                    _InfoRow(
+                      label: 'Total a pagar',
+                      value: currencyFormat.format(debt.totalCost),
+                    ),
+                    _InfoRow(
+                      label: 'Intereses totales',
+                      value: currencyFormat.format(debt.totalInterest),
+                      valueColor: scheme.error,
+                    ),
+                    const SizedBox(height: Spacing.md),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: LinearProgressIndicator(
+                        value: debt.progress,
+                        minHeight: 10,
+                        backgroundColor: scheme.surfaceContainerHighest,
+                        valueColor: AlwaysStoppedAnimation(
+                          debt.progress >= 1.0
+                              ? colors.success
+                              : colors.income,
                         ),
                       ),
-                      const SizedBox(height: Spacing.xs),
-                      Text(
-                        '${debt.paidInstallments}/${debt.totalInstallments} cuotas pagadas  ·  ${(debt.progress * 100).toStringAsFixed(0)}%',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
+                    ),
+                    const SizedBox(height: Spacing.xs),
+                    Text(
+                      '${debt.paidInstallments}/${debt.totalInstallments} cuotas pagadas  ·  ${(debt.progress * 100).toStringAsFixed(0)}%',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: scheme.onSurfaceVariant,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: Spacing.lg),
@@ -164,10 +243,9 @@ class _DebtDetailPageState extends State<DebtDetailPage> {
                     onToggle: (isPaid) => _cubit.togglePayment(
                         p.id, isPaid, widget.debtId),
                   )),
-              ],
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -319,10 +397,10 @@ class _PaymentTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 4),
       child: ListTile(
         dense: true,
-        leading: Checkbox(
-          value: payment.isPaid,
-          onChanged: (v) => onToggle(v ?? false),
+        leading: AnimatedCheckButton(
+          isChecked: payment.isPaid,
           activeColor: colors.success,
+          onChanged: onToggle,
         ),
         title: Text(
           '#${payment.installmentNumber}  ·  ${monthFormat.format(date)}',

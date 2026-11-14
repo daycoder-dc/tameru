@@ -6,23 +6,26 @@ import '../../core/utils/date_formatter.dart';
 class MonthSelector extends StatelessWidget {
   final DateTime currentMonth;
   final ValueChanged<DateTime> onMonthChanged;
+  final Color? foregroundColor;
 
   const MonthSelector({
     super.key,
     required this.currentMonth,
     required this.onMonthChanged,
+    this.foregroundColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final label = DateFormatter.monthYear(currentMonth);
+    final color = foregroundColor;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
-          icon: Icon(PhosphorIconsRegular.caretLeft),
+          icon: Icon(PhosphorIconsRegular.caretLeft, color: color),
           onPressed: () => onMonthChanged(
             DateTime(currentMonth.year, currentMonth.month - 1),
           ),
@@ -33,11 +36,12 @@ class MonthSelector extends StatelessWidget {
             label[0].toUpperCase() + label.substring(1),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
+              color: color,
             ),
           ),
         ),
         IconButton(
-          icon: Icon(PhosphorIconsRegular.caretRight),
+          icon: Icon(PhosphorIconsRegular.caretRight, color: color),
           onPressed: () => onMonthChanged(
             DateTime(currentMonth.year, currentMonth.month + 1),
           ),

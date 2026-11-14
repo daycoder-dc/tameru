@@ -8,6 +8,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/icon_registry.dart';
+import '../../../../shared/painters/wave_painter.dart';
 import '../../../../shared/widgets/breathing_icon.dart';
 import '../../../../shared/widgets/kpi_card.dart';
 import '../../../../shared/widgets/month_selector.dart';
@@ -82,46 +83,101 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
+    final headerPrimary = isDark
+        ? scheme.primary.withAlpha(60)
+        : scheme.primary;
+    final headerSecondary = isDark
+        ? scheme.primary.withAlpha(35)
+        : scheme.primary.withAlpha(180);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Kashu'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(PhosphorIconsLight.gear),
-            onPressed: () => context.pushNamed('settings'),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            MonthSelector(
-              currentMonth: _currentMonth,
-              onMonthChanged: _onMonthChanged,
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async => _loadMonth(),
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    const SizedBox(height: 8),
-                    _buildKpiGrid(),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Actividad reciente',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
+      body: RefreshIndicator(
+        onRefresh: () async => _loadMonth(),
+        edgeOffset: 200,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Stack(
+                children: [
+                  CustomPaint(
+                    size: const Size(double.infinity, 260),
+                    painter: WaveHeaderPainter(
+                      color: headerPrimary,
+                      secondaryColor: headerSecondary,
+                    ),
+                  ),
+                  CustomPaint(
+                    size: const Size(double.infinity, 260),
+                    painter: TopographyPainter(
+                      lineColor: Colors.white.withAlpha(isDark ? 15 : 30),
+                    ),
+                  ),
+                  SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Tameru',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: isDark ? scheme.onSurface : Colors.white,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  PhosphorIconsLight.gear,
+                                  color: isDark ? scheme.onSurface : Colors.white,
+                                ),
+                                onPressed: () => context.pushNamed('settings'),
+                              ),
+                            ],
+                          ),
+                          MonthSelector(
+                            currentMonth: _currentMonth,
+                            onMonthChanged: _onMonthChanged,
+                            foregroundColor: isDark ? null : Colors.white,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    _buildTransactionList(),
-                    _buildPaidFixedExpenses(theme),
-                    const SizedBox(height: 24),
-                    _buildStatisticsSection(theme),
-                    const SizedBox(height: 32),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              sliver: SliverToBoxAdapter(
+                child: Transform.translate(
+                  offset: const Offset(0, -40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildKpiGrid(),
+                      _buildBudgetProgress(),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Actividad reciente',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      _buildTransactionList(),
+                      _buildPaidFixedExpenses(theme),
+                      const SizedBox(height: 24),
+                      _buildStatisticsSection(theme),
+                      const SizedBox(height: 32),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -191,14 +247,23 @@ class _DashboardPageState extends State<DashboardPage> {
                 ),
               ),
               KpiCard(
-                title: 'Disponible',
-                value: _currencyFormatter.format(s.availableBalance),
+                title: s.budgetAmount != null
+                    ? 'Disponible (presup.)'
+                    : 'Disponible',
+                value: _currencyFormatter.format(
+                  s.budgetAmount != null
+                      ? s.budgetAmount! - s.allExpenses
+                      : s.availableBalance,
+                ),
                 icon: PhosphorIcon(
                   PhosphorIconsDuotone.wallet,
                   size: 18,
                   color: scheme.primary,
                 ),
-                valueColor: s.availableBalance >= 0
+                valueColor: (s.budgetAmount != null
+                        ? s.budgetAmount! - s.allExpenses
+                        : s.availableBalance) >=
+                    0
                     ? colors.success
                     : scheme.error,
               ),
@@ -206,6 +271,60 @@ class _DashboardPageState extends State<DashboardPage> {
           );
         }
         return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildBudgetProgress() {
+    return BlocBuilder<DashboardCubit, DashboardState>(
+      bloc: _dashboardCubit,
+      builder: (context, state) {
+        if (state is! DashboardLoaded || state.summary.budgetAmount == null) {
+          return const SizedBox.shrink();
+        }
+        final s = state.summary;
+        final budget = s.budgetAmount!;
+        final spent = s.allExpenses;
+        final progress = budget > 0 ? (spent / budget).clamp(0.0, 1.0) : 0.0;
+        final theme = Theme.of(context);
+        final colors = theme.appColors;
+
+        return Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  minHeight: 10,
+                  backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                  color: spent > budget
+                      ? theme.colorScheme.error
+                      : colors.success,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Gastado: ${_currencyFormatter.format(spent)}',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    'Presupuesto: ${_currencyFormatter.format(budget)}',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
       },
     );
   }

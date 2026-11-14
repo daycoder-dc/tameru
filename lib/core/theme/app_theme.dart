@@ -25,8 +25,8 @@ class AppTheme {
     tertiaryContainer: Color(0xFFEDE7FF),
   );
 
-  static const _darkScaffold = Color(0xFF3730A3);
-  static const _darkSurface = Color(0xFF3F38B8);
+  static const _darkScaffold = Color(0xFF342E9B);
+  static const _darkSurface = Color(0xFF3C35AF);
 
   static const _darkColors = FlexSchemeColor(
     primary: Color(0xFFB8B3FF),
@@ -41,14 +41,14 @@ class AppTheme {
     interactionEffects: true,
     blendOnLevel: 10,
     inputDecoratorBorderType: FlexInputBorderType.outline,
-    inputDecoratorRadius: 12.0,
+    inputDecoratorRadius: 16.0,
     chipRadius: 20.0,
-    cardRadius: 14.0,
+    cardRadius: 20.0,
     cardElevation: 0,
-    dialogRadius: 20.0,
-    fabRadius: 16.0,
-    appBarScrolledUnderElevation: 0.5,
-    navigationBarIndicatorRadius: 12.0,
+    dialogRadius: 24.0,
+    fabRadius: 20.0,
+    appBarScrolledUnderElevation: 0,
+    navigationBarIndicatorRadius: 16.0,
     navigationBarElevation: 0,
   );
 
@@ -68,18 +68,25 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(
-            color: base.colorScheme.outlineVariant,
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(20),
         ),
-        color: base.colorScheme.surface,
+        color: base.colorScheme.surfaceContainerLowest,
       ),
       navigationBarTheme: base.navigationBarTheme.copyWith(
         elevation: 0,
-        indicatorColor: Colors.transparent,
+        indicatorColor: _brandPrimary,
+        indicatorShape: const StadiumBorder(),
         surfaceTintColor: Colors.transparent,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: _brandPrimary,
+            );
+          }
+          return TextStyle(fontSize: 12);
+        }),
       ),
       extensions: [AppColors.light],
     );
@@ -94,17 +101,17 @@ class AppTheme {
     );
     final scheme = base.colorScheme.copyWith(
       surface: _darkSurface,
-      surfaceContainerLowest: const Color(0xFF2D2780),
-      surfaceContainerLow: const Color(0xFF332D94),
-      surfaceContainer: const Color(0xFF3A34A8),
-      surfaceContainerHigh: const Color(0xFF4A44C8),
-      surfaceContainerHighest: const Color(0xFF5650D4),
+      surfaceContainerLowest: const Color(0xFF2B257A),
+      surfaceContainerLow: const Color(0xFF302B8D),
+      surfaceContainer: const Color(0xFF3731A0),
+      surfaceContainerHigh: const Color(0xFF4641BE),
+      surfaceContainerHighest: const Color(0xFF524CC9),
       onSurface: Colors.white,
       onSurfaceVariant: const Color(0xFFD0CDF5),
       outline: const Color(0xFF8B86D8),
       outlineVariant: const Color(0xFF6B65C0),
       inverseSurface: const Color(0xFFE8E5FF),
-      onInverseSurface: const Color(0xFF2D2780),
+      onInverseSurface: const Color(0xFF2B257A),
     );
     return base.copyWith(
       colorScheme: scheme,
@@ -119,13 +126,9 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(
-            color: scheme.outlineVariant,
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(20),
         ),
-        color: _darkSurface,
+        color: scheme.surfaceContainerHigh,
       ),
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
         enabledBorder: OutlineInputBorder(
@@ -149,7 +152,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF4A44C8),
+          backgroundColor: const Color(0xFF4641BE),
           foregroundColor: Colors.white,
         ),
       ),
@@ -185,7 +188,7 @@ class AppTheme {
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) return _brandPrimary;
-          return const Color(0xFF4A44C8);
+          return const Color(0xFF4641BE);
         }),
         trackOutlineColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) return _brandPrimary;
@@ -195,20 +198,31 @@ class AppTheme {
       navigationBarTheme: base.navigationBarTheme.copyWith(
         elevation: 0,
         backgroundColor: _darkScaffold,
-        indicatorColor: Colors.transparent,
+        indicatorColor: scheme.primary,
+        indicatorShape: const StadiumBorder(),
         surfaceTintColor: Colors.transparent,
-        iconTheme: WidgetStatePropertyAll(
-          IconThemeData(color: const Color(0xFFD0CDF5)),
-        ),
-        labelTextStyle: WidgetStatePropertyAll(
-          TextStyle(color: const Color(0xFFD0CDF5), fontSize: 12),
-        ),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const IconThemeData(color: Colors.white);
+          }
+          return IconThemeData(color: const Color(0xFFD0CDF5));
+        }),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return TextStyle(
+              color: scheme.primary,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            );
+          }
+          return TextStyle(color: const Color(0xFFD0CDF5), fontSize: 12);
+        }),
       ),
       dialogTheme: base.dialogTheme.copyWith(
         backgroundColor: _darkSurface,
       ),
       bottomSheetTheme: base.bottomSheetTheme.copyWith(
-        backgroundColor: const Color(0xFF2D2780),
+        backgroundColor: const Color(0xFF2B257A),
       ),
       dividerTheme: DividerThemeData(
         color: scheme.outlineVariant,

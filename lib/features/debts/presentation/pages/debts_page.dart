@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 
+import '../../../../shared/painters/wave_painter.dart';
 import '../../../../shared/widgets/breathing_icon.dart';
 import '../../../../core/database/daos/debt_dao.dart';
 import '../../../../core/di/injection.dart';
@@ -48,16 +49,15 @@ class _DebtsPageState extends State<DebtsPage> {
       decimalDigits: 0,
     );
 
+    final isDark = theme.brightness == Brightness.dark;
+    final headerPrimary = isDark
+        ? scheme.primary.withAlpha(60)
+        : scheme.primary;
+    final headerSecondary = isDark
+        ? scheme.primary.withAlpha(35)
+        : scheme.primary.withAlpha(180);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Creditos'),
-        actions: [
-          IconButton(
-            icon: Icon(PhosphorIconsLight.gear),
-            onPressed: () => context.pushNamed('settings'),
-          ),
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddDebtSheet(context),
         child: const Icon(Icons.add),
@@ -65,82 +65,138 @@ class _DebtsPageState extends State<DebtsPage> {
       body: BlocBuilder<DebtsCubit, DebtsState>(
         bloc: _cubit,
         builder: (context, state) {
-          if (state is DebtsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is DebtsError) {
-            return Center(child: Text(state.message));
-          }
-          if (state is! DebtsLoaded) {
-            return const SizedBox.shrink();
-          }
-          final summary = state.summary;
-
           return RefreshIndicator(
             onRefresh: () async => _cubit.loadDebts(),
-            child: ListView(
-              padding: const EdgeInsets.all(Spacing.lg),
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: KpiCard(
-                        title: 'Deuda total',
-                        value: currencyFormat.format(summary.totalDebt),
-                        icon: Icon(PhosphorIconsLight.bank, size: 16,
-                            color: scheme.error),
-                        valueColor: scheme.error,
+            edgeOffset: 200,
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Stack(
+                    children: [
+                      CustomPaint(
+                        size: const Size(double.infinity, 200),
+                        painter: WaveHeaderPainter(
+                          color: headerPrimary,
+                          secondaryColor: headerSecondary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: Spacing.sm),
-                    Expanded(
-                      child: KpiCard(
-                        title: 'Pagado',
-                        value: currencyFormat.format(summary.totalPaid),
-                        icon: Icon(PhosphorIconsLight.checkCircle, size: 16,
-                            color: colors.income),
-                        valueColor: colors.income,
+                      CustomPaint(
+                        size: const Size(double.infinity, 200),
+                        painter: TopographyPainter(
+                          lineColor: Colors.white.withAlpha(isDark ? 12 : 25),
+                        ),
                       ),
-                    ),
-                  ],
+                      SafeArea(
+                        bottom: false,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Creditos',
+                                style: theme.textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: isDark ? scheme.onSurface : Colors.white,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  PhosphorIconsLight.gear,
+                                  color: isDark ? scheme.onSurface : Colors.white,
+                                ),
+                                onPressed: () => context.pushNamed('settings'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: Spacing.sm),
-                Row(
-                  children: [
-                    Expanded(
-                      child: KpiCard(
-                        title: 'Restante',
-                        value: currencyFormat.format(summary.totalRemaining),
-                        icon: Icon(PhosphorIconsLight.hourglass, size: 16,
-                            color: colors.warning),
-                        valueColor: colors.warning,
+                if (state is DebtsLoading)
+                  const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (state is DebtsError)
+                  SliverFillRemaining(
+                    child: Center(child: Text(state.message)),
+                  )
+                else if (state is DebtsLoaded)
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+                    sliver: SliverToBoxAdapter(
+                      child: Transform.translate(
+                        offset: const Offset(0, -30),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: KpiCard(
+                                    title: 'Deuda total',
+                                    value: currencyFormat.format(state.summary.totalDebt),
+                                    icon: Icon(PhosphorIconsLight.bank, size: 16,
+                                        color: scheme.error),
+                                    valueColor: scheme.error,
+                                  ),
+                                ),
+                                const SizedBox(width: Spacing.sm),
+                                Expanded(
+                                  child: KpiCard(
+                                    title: 'Pagado',
+                                    value: currencyFormat.format(state.summary.totalPaid),
+                                    icon: Icon(PhosphorIconsLight.checkCircle, size: 16,
+                                        color: colors.income),
+                                    valueColor: colors.income,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: Spacing.sm),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: KpiCard(
+                                    title: 'Restante',
+                                    value: currencyFormat.format(state.summary.totalRemaining),
+                                    icon: Icon(PhosphorIconsLight.hourglass, size: 16,
+                                        color: colors.warning),
+                                    valueColor: colors.warning,
+                                  ),
+                                ),
+                                const SizedBox(width: Spacing.sm),
+                                Expanded(
+                                  child: KpiCard(
+                                    title: 'Cuota mensual',
+                                    value: currencyFormat.format(state.summary.totalMonthlyPayments),
+                                    icon: Icon(PhosphorIconsLight.calendarCheck, size: 16,
+                                        color: scheme.primary),
+                                    valueColor: scheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: Spacing.xl),
+                            if (state.summary.debts.isEmpty)
+                              _EmptyState()
+                            else
+                              ...state.summary.debts.map((debt) => _DebtTile(
+                                    debt: debt,
+                                    currencyFormat: currencyFormat,
+                                    onTap: () async {
+                                      await context.push('/debts/${debt.id}');
+                                      _cubit.loadDebts();
+                                    },
+                                    onDelete: () => _confirmDelete(debt),
+                                  )),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(width: Spacing.sm),
-                    Expanded(
-                      child: KpiCard(
-                        title: 'Cuota mensual',
-                        value: currencyFormat.format(summary.totalMonthlyPayments),
-                        icon: Icon(PhosphorIconsLight.calendarCheck, size: 16,
-                            color: scheme.primary),
-                        valueColor: scheme.primary,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: Spacing.xl),
-                if (summary.debts.isEmpty)
-                  _EmptyState()
+                  )
                 else
-                  ...summary.debts.map((debt) => _DebtTile(
-                        debt: debt,
-                        currencyFormat: currencyFormat,
-                        onTap: () async {
-                          await context.push('/debts/${debt.id}');
-                          _cubit.loadDebts();
-                        },
-                        onDelete: () => _confirmDelete(debt),
-                      )),
+                  const SliverToBoxAdapter(child: SizedBox.shrink()),
               ],
             ),
           );
@@ -256,13 +312,31 @@ class _DebtTile extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.appColors;
 
-    return Card(
+    final isDark = theme.brightness == Brightness.dark;
+    return Container(
       margin: const EdgeInsets.only(bottom: Spacing.sm),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.lg),
+      decoration: BoxDecoration(
+        color: isDark
+            ? theme.colorScheme.surfaceContainerHigh
+            : theme.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withAlpha(8),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -321,6 +395,7 @@ class _DebtTile extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }
