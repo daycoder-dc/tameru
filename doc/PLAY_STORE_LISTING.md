@@ -1,16 +1,16 @@
-# Ficha de Play Store — Kashu
+# Ficha de Play Store — Tameru
 
 ## Nombre de la app
-Kashu - Finanzas Personales
+Tameru - Finanzas Personales
 
 ## Descripcion corta (80 caracteres max)
 Controla tus finanzas offline. Presupuestos, gastos fijos, creditos y mas.
 
 ## Descripcion completa
 
-¿Cansado de apps de finanzas que necesitan internet, cobran suscripcion o venden tus datos? Kashu es diferente.
+¿Cansado de apps de finanzas que necesitan internet, cobran suscripcion o venden tus datos? Tameru es diferente.
 
-Kashu es tu herramienta de finanzas personales 100% offline. Tus datos nunca salen de tu telefono — sin cuentas, sin servidores, sin rastreo. Solo tu y tu dinero.
+Tameru es tu herramienta de finanzas personales 100% offline. Tus datos nunca salen de tu telefono — sin cuentas, sin servidores, sin rastreo. Solo tu y tu dinero.
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
@@ -41,7 +41,7 @@ Kashu es tu herramienta de finanzas personales 100% offline. Tus datos nunca sal
 • Analisis visual de donde va tu dinero
 
 🔒 SEGURIDAD
-• Protege tu informacion con PIN de 4 digitos
+• Protege tu informacion con PIN de 6 digitos
 • Autenticacion biometrica (huella dactilar)
 • La app se bloquea automaticamente al salir
 
@@ -53,7 +53,7 @@ Kashu es tu herramienta de finanzas personales 100% offline. Tus datos nunca sal
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
-¿POR QUE KASHU?
+¿POR QUE TAMERU?
 
 ✅ 100% offline — funciona sin internet, siempre
 ✅ Sin suscripcion — pagas una vez, tuyo para siempre
@@ -62,6 +62,6 @@ Kashu es tu herramienta de finanzas personales 100% offline. Tus datos nunca sal
 ✅ Ligera y rapida — ocupa poco espacio y abre al instante
 ✅ Diseño moderno — interfaz limpia con Material Design 3
 
-Kashu fue diseñada para personas que quieren el control total de sus finanzas sin depender de la nube ni de terceros. Simple, segura y tuya.
+Tameru fue diseñada para personas que quieren el control total de sus finanzas sin depender de la nube ni de terceros. Simple, segura y tuya.
 
 Descargala y toma el control de tu dinero hoy.

@@ -1,6 +1,6 @@
 abstract class AppConstants {
-  static const String appName = 'Kashu';
-  static const String databaseName = 'kashu.sqlite';
+  static const String appName = 'Tameru';
+  static const String databaseName = 'tameru.sqlite';
   static const String defaultCurrencyCode = 'COP';
   static const String defaultLocale = 'es_CO';
 

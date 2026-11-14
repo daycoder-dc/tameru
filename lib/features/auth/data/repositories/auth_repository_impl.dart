@@ -10,9 +10,9 @@ class AuthRepositoryImpl implements AuthRepository {
   final LocalAuthentication _localAuth;
   final FlutterSecureStorage _secureStorage;
 
-  static const _pinKey = 'kashu_pin';
-  static const _onboardingKey = 'kashu_onboarding_completed';
-  static const _biometricEnabledKey = 'kashu_biometric_enabled';
+  static const _pinKey = 'tameru_pin';
+  static const _onboardingKey = 'tameru_onboarding_completed';
+  static const _biometricEnabledKey = 'tameru_biometric_enabled';
 
   AuthRepositoryImpl({
     required LocalAuthentication localAuth,
@@ -24,7 +24,7 @@ class AuthRepositoryImpl implements AuthRepository {
   FutureEither<bool> authenticateWithBiometrics() async {
     try {
       final result = await _localAuth.authenticate(
-        localizedReason: 'Autenticarse para acceder a Kashu',
+        localizedReason: 'Autenticarse para acceder a Tameru',
         options: const AuthenticationOptions(biometricOnly: true),
       );
       return Right(result);

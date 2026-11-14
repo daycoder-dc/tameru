@@ -18,7 +18,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   static final _pages = [
     _PageData(
       icon: PhosphorIconsDuotone.wallet,
-      title: 'Bienvenido a Kashu',
+      title: 'Bienvenido a Tameru',
       subtitle:
           'Tu asistente de finanzas personales.\nTodo se guarda en tu dispositivo, sin internet.',
     ),

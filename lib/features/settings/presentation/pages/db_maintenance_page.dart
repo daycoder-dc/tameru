@@ -144,7 +144,7 @@ class _DbMaintenancePageState extends State<DbMaintenancePage> {
 
   Future<void> _exportBackup() async {
     final copy = await _backupService.exportCopy();
-    KashuApp.suppressLock = true;
+    TameruApp.suppressLock = true;
     try {
       final uri = await FilePicker.saveFile(
         dialogTitle: 'Guardar copia de seguridad',
@@ -155,17 +155,17 @@ class _DbMaintenancePageState extends State<DbMaintenancePage> {
         _showSnack('Copia de seguridad exportada');
       }
     } finally {
-      KashuApp.suppressLock = false;
+      TameruApp.suppressLock = false;
     }
   }
 
   Future<void> _confirmImport() async {
-    KashuApp.suppressLock = true;
+    TameruApp.suppressLock = true;
     final files = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['db'],
     );
-    KashuApp.suppressLock = false;
+    TameruApp.suppressLock = false;
     if (files.isEmpty || files.single.path == null) return;
     final filePath = files.single.path!;
 

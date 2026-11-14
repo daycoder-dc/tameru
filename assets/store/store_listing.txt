@@ -1,9 +1,9 @@
 ============================================================
-FICHA DE PLAY STORE - KASHU
+FICHA DE PLAY STORE - TAMERU
 ============================================================
 
-NOMBRE DE LA APP: Kashu
-NOMBRE DEL PAQUETE: com.daycoder.kashu
+NOMBRE DE LA APP: Tameru
+NOMBRE DEL PAQUETE: com.daycoder.tameru
 CATEGORIA: Finanzas
 CLASIFICACION: Todos (E)
 
@@ -15,7 +15,7 @@ Controla tus finanzas, gastos fijos y creditos. 100% offline y privado.
 ------------------------------------------------------------
 DESCRIPCION LARGA (max 4000 caracteres):
 ------------------------------------------------------------
-Kashu es tu asistente de finanzas personales que funciona completamente sin internet. Toda tu informacion se guarda en tu dispositivo, nunca en la nube.
+Tameru es tu asistente de finanzas personales que funciona completamente sin internet. Toda tu informacion se guarda en tu dispositivo, nunca en la nube.
 
 Lleva el control de tus ingresos, gastos, gastos fijos mensuales y creditos de forma simple y organizada.
 
@@ -45,7 +45,7 @@ Control de creditos
 - Progreso visual de cuotas pagadas vs totales
 
 Seguridad
-- Protege tu informacion con PIN de 4 digitos
+- Protege tu informacion con PIN de 6 digitos
 - Autenticacion biometrica opcional (huella dactilar)
 - Bloqueo automatico al salir de la app
 
@@ -55,7 +55,7 @@ Respaldo de datos
 - Todo local, sin necesidad de cuenta ni internet
 
 PRIVACIDAD TOTAL:
-Kashu no recopila datos, no tiene publicidad, no requiere registro ni conexion a internet. Tus finanzas son tuyas y se quedan en tu dispositivo.
+Tameru no recopila datos, no tiene publicidad, no requiere registro ni conexion a internet. Tus finanzas son tuyas y se quedan en tu dispositivo.
 
 Ideal para:
 - Personas que quieren llevar un control simple de sus finanzas
@@ -66,7 +66,7 @@ Ideal para:
 ------------------------------------------------------------
 POLITICA DE PRIVACIDAD URL:
 ------------------------------------------------------------
-https://daycoder-dc.github.io/kashu/privacy-policy.html
+https://daycoder-dc.github.io/tameru/privacy-policy.html
 
 ------------------------------------------------------------
 EMAIL DE CONTACTO:

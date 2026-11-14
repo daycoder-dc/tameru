@@ -17,7 +17,7 @@ class TermsPage extends StatelessWidget {
           _section(
             theme,
             'Tus datos son tuyos',
-            'Kashu funciona 100% offline. Ningun dato sale de tu dispositivo. '
+            'Tameru funciona 100% offline. Ningun dato sale de tu dispositivo. '
                 'No recopilamos, transmitimos ni almacenamos informacion '
                 'personal en servidores externos.',
           ),
@@ -41,7 +41,7 @@ class TermsPage extends StatelessWidget {
           _section(
             theme,
             'Permisos',
-            'Kashu solicita permiso de biometria unicamente para el '
+            'Tameru solicita permiso de biometria unicamente para el '
                 'desbloqueo de la app. No accede a internet, contactos, '
                 'ubicacion ni ningun otro recurso.',
           ),

@@ -97,7 +97,7 @@ class CreditsPage extends StatelessWidget {
           const Divider(),
           const SizedBox(height: 16),
           Text(
-            'Kashu es una herramienta de organizacion financiera personal. '
+            'Tameru es una herramienta de organizacion financiera personal. '
             'No constituye asesoria financiera profesional.',
             textAlign: TextAlign.center,
             style: theme.textTheme.labelSmall?.copyWith(

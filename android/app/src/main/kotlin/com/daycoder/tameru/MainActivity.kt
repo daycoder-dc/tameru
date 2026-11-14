@@ -1,4 +1,4 @@
-package com.daycoder.kashu
+package com.daycoder.tameru
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

@@ -16,5 +16,5 @@ void main() async {
 
   await initDependencies();
 
-  runApp(const KashuApp());
+  runApp(const TameruApp());
 }

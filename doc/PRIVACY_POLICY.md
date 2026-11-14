@@ -1,14 +1,14 @@
-# Politica de Privacidad — Kashu
+# Politica de Privacidad — Tameru
 
 **Ultima actualizacion:** 1 de noviembre de 2026
 
 ## Resumen
 
-Kashu es una aplicacion de finanzas personales que funciona 100% offline. **No recopilamos, almacenamos ni transmitimos ningun dato personal.**
+Tameru es una aplicacion de finanzas personales que funciona 100% offline. **No recopilamos, almacenamos ni transmitimos ningun dato personal.**
 
 ## Datos almacenados
 
-Toda la informacion que ingresas en Kashu (transacciones, presupuestos, creditos, gastos fijos, configuracion) se almacena exclusivamente en tu dispositivo, en una base de datos SQLite local. Estos datos nunca salen de tu telefono.
+Toda la informacion que ingresas en Tameru (transacciones, presupuestos, creditos, gastos fijos, configuracion) se almacena exclusivamente en tu dispositivo, en una base de datos SQLite local. Estos datos nunca salen de tu telefono.
 
 ## Datos que NO recopilamos
 
@@ -21,7 +21,7 @@ Toda la informacion que ingresas en Kashu (transacciones, presupuestos, creditos
 
 ## Permisos
 
-Kashu solicita unicamente los siguientes permisos:
+Tameru solicita unicamente los siguientes permisos:
 
 - **Biometria (USE_BIOMETRIC, USE_FINGERPRINT):** Para autenticacion local mediante huella dactilar. La informacion biometrica es gestionada por el sistema operativo Android y nunca es accesible para la aplicacion.
 

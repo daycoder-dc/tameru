@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:kashu/app/app.dart';
+import 'package:tameru/app/app.dart';
 
 void main() {
   testWidgets('App renders', (WidgetTester tester) async {
-    await tester.pumpWidget(const KashuApp());
-    expect(find.text('Kashu'), findsOneWidget);
+    await tester.pumpWidget(const TameruApp());
+    expect(find.text('Tameru'), findsOneWidget);
   });
 }

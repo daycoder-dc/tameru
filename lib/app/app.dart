@@ -9,16 +9,16 @@ import '../features/settings/presentation/cubit/settings_cubit.dart';
 import '../features/settings/presentation/cubit/settings_state.dart';
 import 'router/app_router.dart';
 
-class KashuApp extends StatefulWidget {
-  const KashuApp({super.key});
+class TameruApp extends StatefulWidget {
+  const TameruApp({super.key});
 
   static bool suppressLock = false;
 
   @override
-  State<KashuApp> createState() => _KashuAppState();
+  State<TameruApp> createState() => _TameruAppState();
 }
 
-class _KashuAppState extends State<KashuApp> with WidgetsBindingObserver {
+class _TameruAppState extends State<TameruApp> with WidgetsBindingObserver {
   final _authCubit = sl<AuthCubit>();
   final _settingsCubit = sl<SettingsCubit>();
 
@@ -38,7 +38,7 @@ class _KashuAppState extends State<KashuApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (KashuApp.suppressLock) return;
+    if (TameruApp.suppressLock) return;
     if (state == AppLifecycleState.paused) {
       _authCubit.lock();
     }
@@ -71,7 +71,7 @@ class _KashuAppState extends State<KashuApp> with WidgetsBindingObserver {
               : ThemeMode.system;
 
           return MaterialApp.router(
-            title: 'Kashu',
+            title: 'Tameru',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(),
             darkTheme: AppTheme.dark(),

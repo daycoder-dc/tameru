@@ -34,7 +34,7 @@ class DbBackupService {
     final now = DateTime.now();
     final stamp =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
-    final dest = File(p.join(tempDir.path, 'kashu_backup_$stamp.db'));
+    final dest = File(p.join(tempDir.path, 'tameru_backup_$stamp.db'));
     return dbFile.copy(dest.path);
   }
 

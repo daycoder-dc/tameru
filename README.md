@@ -1,4 +1,4 @@
-# Kashu
+# Tameru
 
 Administrador de finanzas personales offline para Android.
 
@@ -12,7 +12,7 @@ Todo se guarda en tu dispositivo, sin internet. Sin cuentas, sin servidores, sin
 - **Creditos** — tracking de deudas con tasa de interes, cuotas, amortizacion y pagos
 - **Estadisticas** — graficos de torta y barras por categoria
 - **Respaldo** — exportar/importar base de datos, compactar (VACUUM)
-- **Seguridad** — PIN de 4 digitos + autenticacion biometrica, bloqueo automatico
+- **Seguridad** — PIN de 6 digitos + autenticacion biometrica, bloqueo automatico
 
 ## Stack
 
@@ -58,12 +58,12 @@ flutter build apk --release
 
 ## Configuracion de firma
 
-1. Generar keystore: `keytool -genkey -v -keystore android/app/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias kashu`
+1. Generar keystore: `keytool -genkey -v -keystore android/app/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias tameru`
 2. Crear `android/key.properties`:
    ```
    storePassword=<password>
    keyPassword=<password>
-   keyAlias=kashu
+   keyAlias=tameru
    storeFile=upload-keystore.jks
    ```
 
